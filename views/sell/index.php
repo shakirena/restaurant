@@ -1,0 +1,386 @@
+<?php
+
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\bootstrap\Modal;
+use yii\widgets\Pjax;
+use yii\helpers\ArrayHelper;
+use kartik\grid\GridView;
+use app\models\Kassa;;
+use kartik\date\DatePicker;
+use app\models\Client;
+use app\models\Contractor;
+use app\models\Spares;
+use app\models\Users;
+use app\models\Sell2;
+use kartik\select2\Select2;
+use app\components\PushAll;
+$placei = Yii::$app->session->get('place');
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\SellSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+//$this->params['breadcrumbs'][] = $this->title;
+//if (  Yii::$app->user->identity->id_role==1)  $role=0;
+
+//else $role=1;
+?>
+<div class="sell-index" xmlns="http://www.w3.org/1999/html">
+    <div align="right">
+	    <div class="btn-group">
+				<?= Html::button('<i class="glyphicon glyphicon-search"></i>Axtarış', ['value' => Url::to(['sell/find']), 'class' => 'btn btn-danger', 'id' => 'sell_dialog']) ?>
+        </div>
+        <div class="btn-group">
+            <?= Html::button('<i class="glyphicon glyphicon-usd"></i>Borc ödənişi', ['value' => Url::to(['sell/dialog']), 'class' => 'btn btn-info', 'id' => 'dclient']) ?>
+        </div> 
+        <div class="btn-group">
+            <?= Html::button('<i class="glyphicon glyphicon-user"></i>Müştəri', ['value' => Url::to(['sell/client']), 'class' => 'btn btn-warning', 'id' => 'client_dialog']) ?>
+        </div>  
+                    
+        <span style="margin-left:10pt;font-size: 16pt; text-decoration: double"><?= Yii::$app->session->get('client')?></span>
+        <br>
+        <?php if ($model->id_client) {
+
+            Yii::$app->session->set('id_client',$model->id_client);
+            Yii::$app->session->set('client',Client::find()->where(['id_client'=>$model->id_client])->one()->fio);
+                                    
+        }
+        ?>
+    </div>
+    <?php
+            Modal::begin([
+                'options' => [
+                    'id' => 'client-modal',
+                    'tabindex' => true,
+                ],
+
+            ]);
+
+            echo '<div id="clientContent1"></div>';
+
+            Modal::end();
+            ?>
+            <?php
+            Modal::begin([
+                // 'header' => '<h4>Find device</h4>',
+                'options' => [
+                    'id' => 'client-create',
+                    'tabindex' => true,
+                ],
+
+                // 'size' => 'modal-sm',
+
+            ]);
+
+            echo '<div id="clientContent"></div>';
+
+            Modal::end();
+			
+			Modal::begin([
+			   // 'header' => '<h4>Find device</h4>',
+				'options' => [
+					'id' => 'login-modal',
+					'tabindex' => '-1',
+				],
+
+				'size' => 'modal-sm',
+
+			]);
+
+			echo '<div id="loginContent"> </div>';
+			Modal::end();
+            ?>
+    <div class="btn-group row noprint" >
+        <?php Pjax::begin([
+            'enablePushState' => false,
+            'timeout' => 300000,
+            'id' => 'photoreport_wrapper',
+
+
+        ]); ?>
+		
+		<?php ?>
+       
+        <div class="col-md-8" style="margin-top:-40px">
+            
+              <?php
+			  if ($user) $username= Users::findOne($user)->fio; else $username = Users::findOne(Yii::$app->session->get('user'))->fio;
+				if ($_POST[type]!='users' && $_POST[type] || $_GET[type]  &&  $_GET[type]!='users')
+               echo "<button onclick='editContentSell(\"$back\",\"\")' class='btn btn-success btn-lg' style='margin:20px;    '>
+                        <span class='glyphicon glyphicon-arrow-left'></span> Gəriyə</button>
+                    <span style='font-size: 15pt'>Ofisiant: <span style='font-weight: bold'>".$username."
+                    </span>/ Yer №:<a href='place?id=$id' style='font-weight: bold'> ".\app\models\Place::findOne(Yii::$app->session->get('place'))->name."
+
+
+                         </a> </span><br>";
+						 
+						 	if($next=='check')
+								echo "<div style='margin-left:60px'>
+											<button class='btn btn-primary btn-lg' style='background-color:red' id='quantity1' onclick='clickQuantity(1)'>1</button> &nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity2' onclick='clickQuantity(2)'>2</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity3' onclick='clickQuantity(3)'>3</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity4' onclick='clickQuantity(4)'>4</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity5' onclick='clickQuantity(5)'>5</button>&nbsp&nbsp
+											<button  class='btn btn-primary btn-lg' id='quantity6' onclick='clickQuantity(6)'>6</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity7' onclick='clickQuantity(7)'>7</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity8' onclick='clickQuantity(8)'>8</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity9' onclick='clickQuantity(9)'>9</button>&nbsp&nbsp
+											<button class='btn btn-primary btn-lg' id='quantity10' onclick='clickQuantity(10)'>10</button>
+								
+									</div>";
+						 echo "<br>";
+						 if ($models)
+                        foreach ($models as $id => $model)
+                        {
+						
+								
+							
+                            if (  $next=='type') {
+                                $sell = Sell2::find()->where(['sold' => 0, 'id_user' => Yii::$app->session->get('user'), 'id_place' => $id])->one();
+                                if ($sell->id_place)
+                                    echo "<button  class='btn btn-warning btn-lg' onclick='editContentSell(\"$next\",$id)' style='margin:20px;width: 160px;'>$model</button>";
+                                else {
+                                    $sell = Sell2::find()->andWhere("id_user!= Yii::$app->session->get('user')")->where(['sold' => 0, 'id_place' => $id])->one();
+									$ofis= Users::find()->where(["id_user"=>$sell->id_user])->one()->fio;
+                                    if ($sell->id_place)
+										if (Yii::$app->user->identity->id_role==1)
+                                        echo "<button title=$ofis class='btn btn-danger btn-lg' disabled onclick='editContentSell(\"$next\",$id)' style='margin:20px;width: 160px;'>$model</button>";
+										else 
+										 echo "<button title=$ofis class='btn btn-danger btn-lg'  onclick='editContentSell(\"$next\",$id)' style='margin:20px;width: 160px;'>$model</button>";
+                                    else
+                                        echo "<button  class='btn btn-default btn-lg' onclick='editContentSell(\"$next\",$id)' style='margin:20px;width: 160px;'>$model</button>";
+
+                                }
+                            }
+                            else
+                                echo "<button  class='btn btn-default btn-lg' onclick='editContentSell(\"$next\",$id)' style='margin:20px;width: 160px;'>$model</button>";
+
+
+                        }
+                            echo "<br>";
+                        if ($_POST[type]!='users' && $_POST[type] || $_GET[type] &&  $_GET[type]!='users')
+                            echo "<br> <button onclick='editContentSell(\"$back\",\"\")' class='btn btn-success btn-lg' style='margin:20px;    '>
+                            <span class='glyphicon glyphicon-arrow-left'></span> Gəriyə</button>";
+                        if (Yii::$app->user->identity->id_role==2)
+                            echo "<a href='places' class='btn btn-danger btn-lg' style='margin:20px;    '>
+                            <span class='glyphicon glyphicon-glass'></span> Masalar</a>";
+
+
+
+
+
+                ?>
+
+
+        </div>
+        <div class="col-md-4">
+     
+            <?php    $place=$_POST['id'];
+			if ($dataProvider) { 
+	
+		 Pjax::begin([
+				'enablePushState' => false,
+				'timeout' => 300000,
+				'id' => 'grid-update',
+
+
+			]); 
+                echo GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'tableOptions' => [
+                        'style'=>'width:1200px',
+                        'class' => 'table-rena table-rena2',
+
+                    ],
+					'pageSummaryRowOptions' => ['class' => 'text-right danger'],
+            
+					'showPageSummary' => true,
+                    'resizableColumns' => false,
+
+
+
+                    'columns' => [
+                        ['class' => 'kartik\grid\SerialColumn'],
+                        [
+
+                            'label' =>'Malın adı',
+							'format' => 'raw',
+                            'value' => function ($model, $index, $widget)
+							{
+								$id = $model->id;
+								return "<a href='javascript:void(0)' onclick=\"insertNote($id)\">".$model->idMenu->name."</a>"; ;
+							},
+                            'filterWidgetOptions' => [
+                                'pluginOptions' => ['allowClear' => true]
+                            ],
+                            'filterType' => GridView::FILTER_SELECT2,
+                            'width' => '550px',
+                            'filterInputOptions' => ['placeholder' => 'Any type']
+                        ],
+                        [
+                            'attribute' => 'quantity',
+                            'label' =>'Say',
+
+                            'width' => '700px',
+                            'format' => 'raw',
+							'value' => function ($model, $index, $widget) use ($place,$type) {
+								if ( $model->quantity > $model->print ) $val =0;
+								else $val = 1;
+								return " <span class='glyphicon glyphicon-minus' onClick = 'editQuantity($model->id,-1,$val)' style='font-size:15pt;color:red'></span> &nbsp &nbsp".$model->quantity." &nbsp<span class='glyphicon glyphicon-plus' onClick = 'editQuantity($model->id,1,$val)' style='font-size:15pt;color:green'></span> ";
+                                /*return Html::input('text', 'quantity[]', $model->quantity, ['class' => 'form-control','style' => 'width:40px !important', 'size' => '3', 'onChange' => "editQuantity($model->id,this.value,'$type')"]);*/
+                            }
+                        ],
+
+                        [
+                            'attribute' => 'price',
+                            'label' => 'Qiymeti',
+                            'width' => '60px',
+                            'format' => 'raw',
+                             'value' => function ($model, $index, $widget) use ($place,$type) {
+								$id_role = Yii::$app->user->identity->id_role;
+                                return Html::input('text', 'price[]', $model->price, ['class' => 'form-control', 'style' => 'width:50px !important','size' => '7', 'onChange' => "editPriceSellIndex($model->id,this.value,$id_role)"]);
+                            }
+                        ],
+						[
+							 'pageSummary' => true, 
+							 'value' =>   'sumValue',
+							 'label' => 'Cəmi'
+						],
+						[
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) use ($place,$type) {
+								
+                                return Html::a('<span class="glyphicon glyphicon-share-alt"></span>','#', [
+										'title' => 'Transfer',
+										'data-pjax' => true,
+										'data-method' => 'post',
+										'onclick'=>"transfer($model->id)"
+									]);
+                            },
+							 'label' => '->'
+						],
+						
+                        ['class' => 'kartik\grid\ActionColumn', 'template' => '{delete}',
+						'buttons' => [
+							
+								'delete' => function ($url, $model) {
+								if ( $model->quantity > $model->print ) $val =0;
+								else $val = 1;
+								if (Yii::$app->user->identity->id_role==2 || Yii::$app->user->identity->id_role==3) 
+								return Html::a('<span class="glyphicon glyphicon-trash"></span>','#', [
+										'title' => 'Удалить',
+										'data-pjax' => true,
+										'data-method' => 'post',
+										'onclick'=>"deleteSellAdmin($model->id,$val)"
+									]);
+								else 
+									return Html::a('<span class="glyphicon glyphicon-trash"></span>','#', [
+										'title' => 'Удалить',
+										'data-pjax' => true,
+										'data-method' => 'post',
+										'onclick'=>"deleteSell($model->id,$val)"
+									]);
+									
+									
+								}
+							],
+						
+						
+						],
+                    ],
+                    // 'debt',
+
+                ]);
+				
+				if (!$discount ) $discount = 0;
+                ?>
+				
+                    <div>
+                       <b>Güzəşt</b>: &nbsp 
+					
+					   <?php echo "
+					   <input type='text' style='width: 80px; height:30px; margin-top:20px; text-align:center;' class='text ui-widget-content ui-corner-all' name='discount' id='discount' value=$discount onChange= \"discountChange($placei)\" />";
+					   ?>
+					   &nbsp &nbsp
+						<b>Yekun</b>:&nbsp <span id="sum" style="font-size: 50px;color:#BB0000;"><?php echo round($sum, 3) ?></span>&nbsp &nbsp
+						
+						<br>
+                          Verdi <i>(F9)</i> <input type="text" style="width: 80px; height:30px; margin-top:20px; text-align:center;" class="text ui-widget-content ui-corner-all" name="money" id="money" value='0' />+<input id="virtual" type="text" disabled style="width:60px;height:30px;" class="text ui-widget-content ui-corner-all">
+                          </div>
+						  <br>
+                          <?= Select2::widget([
+                                    'data' => ArrayHelper::map(Kassa::find()->where(["pos"=>1])->all(), 'id', 'name'),
+                                    'name' => 'kassa',
+                                    'options' => [
+                                        'id' => 'kassa', 
+                                        'onchange'=>"changePos()",
+                                        'placeholder' => 'Ödəniş üsulu POS / Bonus seçin',
+                                    ]
+                                ]); ?>
+                   
+                        <br>
+						<?php if (Yii::$app->user->identity->id_role==2 || Yii::$app->user->identity->id_role==3 )  {
+                        echo  Html::button('<i class="glyphicon glyphicon-ok"></i> <i class="glyphicon glyphicon-send"></i> OK', ['class' => 'btn btn-success','id'=>'received', 'onclick' => "receivedSell($('#kassa').val(),$('#virtual').val(),$('#money').val(),$number)"]); }
+						
+						echo  " ".Html::button('<i class="glyphicon glyphicon-ok"></i> <i class="glyphicon glyphicon-print"></i> Print', ['class' => 'btn btn-warning','id'=>'postponed1', 'onclick' => "receivedSell1($number)"]).'<br><br>'; ?>
+						 <?= Html::button('<i class="glyphicon glyphicon-log-out"></i> Gözləməyə + logout', ['class' => 'btn btn-danger postponed', 'onclick' => "receivedSell2($number,1)"]); ?>
+                        <?= Html::button('<i class="glyphicon glyphicon-ok"></i> <i class="glyphicon glyphicon-send"></i> Gözləməyə', ['class' => 'btn btn-info postponed', 'onclick' => "receivedSell2($number,0)"]); ?>
+						
+                        &nbsp&nbsp&nbsp
+						
+						<?
+							/*if (Yii::$app->user->identity->id_role==2)
+								echo Html::button('<i class="glyphicon glyphicon-remove"></i>  Ləğv et', ['class' => 'btn btn-danger', 'onclick' => 'deleteAll("type")']);*/
+							?>
+
+                       
+
+
+            <?php
+			Pjax::end(); 
+            }
+			
+			else 	 echo  "<br>".Html::button('<i class="glyphicon glyphicon-log-out"></i>logout', ['class' => 'btn btn-danger','id'=>'postponed1', 'onclick' => "receivedSell2(-1,1)"]); 
+             
+            
+             
+             ?>
+			 
+        </div>
+
+        <?php Pjax::end(); ?>
+    </div>
+
+    <?php
+    Modal::begin([
+        // 'header' => '<h4>Find device</h4>',
+        'options' => [
+            'id' => 'chek',
+            'tabindex' => true,
+
+        ],
+
+
+
+    ]);
+
+    echo '<div  id="chekContent"></div>';
+
+    Modal::end();
+    ?>
+
+</div>
+
+<style>
+    @media print {
+        .noprint, .modal-header {
+            content: " ";
+            display: none !important;;visibility: hidden !important;
+        }
+        .modal-content
+        {
+            border: none !important;
+        }
+    }
+</style>

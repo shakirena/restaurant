@@ -1,0 +1,1335 @@
+/**
+ * Created by Администратор on 09.08.2016.
+ */
+
+
+$("#kartik-modal2").on('hidden.bs.modal',function(){
+    window.location.replace("index")
+});
+
+$("#sell-modal2").on('hidden.bs.modal',function(){
+    window.location.replace("index")
+
+});
+$("#client-modal").on('hidden.bs.modal',function(){
+
+   window.location.reload();
+
+});
+$("#client").click(function(){
+    $("#object-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#product").click(function(){
+    $("#product-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#addDclient").click(function(){
+    $("#modal").modal("show")
+        .find("#modalDclient")
+        .load($(this).attr("value"));
+});
+$("#place").change(function(){
+	
+	  $.get('check-place', {id:$("#place").val()},function(date){
+			if (date==1) {
+			       $("#select2-place-container").css('color', 'red');
+					$("#select2-place-container").css('font-weight', 'bold');}
+					
+					else 
+					{
+					$("#select2-place-container").css('color', 'black');
+					$("#select2-place-container").css('font-weight', 'normal');}
+
+    });	
+
+});
+function deleteArrival(id)
+{
+    $.get('delete2', {id:id},function(){
+        window.location.replace("index");
+    });
+}
+function printZakaz(id) {
+     window.open("print?id="+id,"_blank");
+
+};
+function printZakazi() {
+    window.open("print","_blank");
+
+};
+function printZakaz2(id) {
+    window.open("print2?id="+id,"_blank");
+
+}
+function editUser(login)
+{
+	$("#login").val(login);
+	 document.getElementById("formLogin").hidden = false;
+	 $("#password").focus();
+}
+/*function deleteSell(id){
+    $.post('delete-sell', {id:id},function(html){
+        $("#kartik-modal").modal("show")
+            .find("#modalContent")
+            .load("zakaz?id=" +$('#client').text());
+
+    });
+}*/
+function received(id)
+{
+    $.get('received', {id:id},function(html){
+        alert("Заказ №"+id+" забрал клиен");
+        window.location.replace("made");
+
+    });
+}
+function discountChange(place)
+{
+	$.get('change-discount', {place:place, discount: $("#discount").val()},function(html){      
+	    $.pjax.reload({container:"#grid-update"});		
+    });
+}
+function changeSklad(id)
+{
+
+  $.get('change-sklad', {id:id},function(html){
+     
+			
+
+   });
+
+
+}
+
+function changeDisabled(id)
+{
+
+  $.get('change-disabled', {id:id},function(html){
+     			
+
+   });
+
+
+}
+function changeProcent()
+{
+    $.get('change-procent', {proc:$("#procent").val()},function(){
+        window.location.replace("index");
+    });
+}
+function ajaxFileUpload()
+{
+    if (confirm("Məlumatları yeniləmək istədiyinizə əminsiz?"))
+    {
+        $.get('import-xls', {},function(html){
+            alert(html);
+        });
+
+        return false;
+    }
+}
+function otmena (number)
+{
+    $.get('../password/check-password', {password:$('#password').val()},function(data){
+	
+     if (data==1) {
+            $.get('otmena', {number:number},function(){
+                window.location.reload();
+            });
+        }
+    else alert('Şifrə səhvdir');
+    });
+}
+function returnSellPassword(number)
+{		  
+	   $("#login-modal").modal("show")
+        .find("#loginContent")
+        .load('login?number='+number);
+}
+function returnSellPassword2(number)
+{		  
+	   $("#login-modal").modal("show")
+        .find("#loginContent")
+        .load('login2?number='+number);
+}
+function passwordLogin()
+{
+	   $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load('../password/login');
+	
+	
+}
+function passwordView()
+{
+	 $.get('../password/check-password', {password:$('#password').val()},function(data){
+		
+        if (data==1) window.location.replace("../password/index");
+		else alert('Şifrə səhvdir');
+    });
+	  
+	
+	
+}
+function deleteSell(id, val)
+{
+	if (val==0) 
+		$.get('delete', {id:id, val: val},function(){
+			window.location.reload();
+		});
+	else 
+	 $("#login-modal").modal("show")
+        .find("#loginContent")
+        .load('login?id='+id);
+	
+}
+
+
+function deleteSellAdmin(id, val)
+{
+	if (val==0) 
+		$.get('delete', {id:id, val: val},function(){
+			window.location.reload();
+		});
+	else
+	$("#login-modal").modal("show")
+                        .find("#loginContent")
+                        .load('otmena-form?id='+id);
+	
+}
+function clickQuantity(quantity)
+{
+  $("#quantity1").css("background-color","#337ab7");
+  $("#quantity"+quantity).css("background-color","red");
+	$.get('click-quantity', {quantity:quantity},function(){
+			
+		});
+
+}
+function otmenaSell(id)
+{
+
+    $.get('../password/check-password', {password:$('#password').val()},function(data){
+	
+        if (data==1) {
+                $("#login-modal").modal("show")
+                        .find("#loginContent")
+                        .load('otmena-form?id='+id);
+        }
+        else 
+        alert("Şifrə düzgün daxili edilməyib")
+    });
+	
+}
+function gener()
+{
+    var bar='';
+    for (var i = 1; i <= 5; i++)
+        bar+=''+Math.floor(Math.random() * (8));
+
+    $("#barcodep-name-0").val(bar);
+}
+function addTypeProduct() {
+    if ($('#type5').val()) id=$('#type5').val();
+    else  if ($('#type4').val()) id=$('#type4').val();
+    else  if ($('#type3').val()) id=$('#type3').val();
+    else  if ($('#type2').val()) id=$('#type2').val();
+    else  if ($('#type1').val()) id=$('#type1').val();
+    else id=0;
+    $("#type-create").modal("show")
+        .find("#modalContent")
+        .load("create-type?id="+id);
+
+
+
+};
+function editSum(id,sum)
+{
+    $.get('update-sum', {id:id,sum:sum},function(){
+        $.pjax.reload({container:"#grid-arrival"});
+        $("#barcode").focus();
+    });
+
+}
+
+function toggle(source)
+{
+
+checkboxes=document.getElementsByName('select[]');
+    for (var i= 0,n=checkboxes.length;i<n;i++)
+    {
+        checkboxes[i].checked=source.checked;
+
+    }
+
+}
+
+function addProduct() {
+    if ($('#type5').val()) id=$('#type5').val();
+    else  if ($('#type4').val()) id=$('#type4').val();
+    else  if ($('#type3').val()) id=$('#type3').val();
+    else  if ($('#type2').val()) id=$('#type2').val();
+    else  if ($('#type1').val()) id=$('#type1').val();
+
+
+    $("#type-create").modal("show")
+        .find("#modalContent")
+        .load("create-product?id="+id);
+
+
+};
+function editTypeProduct() {
+    $("#type-create").modal("show")
+        .find("#modalContent")
+        .load("update?type1="+$('#type1').val()+"&type2="+$('#type2').val()+"&type3="+$('#type3').val()+"&type4="+$('#type4').val()+"&type5="+$('#type5').val()+"&product="+$('#product').val());
+
+};
+function infoClient(id,type){
+    window.open("../move/client?id="+id,"_blank");s
+
+}
+$("#typeBalance").click(function(){
+    $("#type-balance-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+function typeOperation(type){
+   $.get('type-balance', {type:type},function(data){
+        $("#id_type").html(data);
+    });
+}
+$("#device").click(function(){
+    $("#device-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#spares").click(function(){
+    $("#spares-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+function editType(){
+    $.get('group', {type: $("#typeNew").val()},function(data){
+        $('#spares-id_type').html(data);
+    });
+}
+
+function closeDay()
+{
+    if (confirm("Вы уверены, что хотите закрыть день???"))
+    $.get('close-day', {},function(){
+        alert("День закрыт");
+    });
+}
+$("#type").click(function(){
+    $("#type-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#menu").click(function(){
+    $("#menu-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#postponed_dialog").click(function(){
+    //window.open("postponed");
+    window.location.replace("postponed");
+});
+$("#store").click(function(){
+    $("#store-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+
+$("#contractor").click(function(){
+    $("#contractor-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#client").click(function(){
+
+    $("#client-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+
+$("#users").click(function(){
+    $("#users-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#master").click(function(){
+    $("#master-create").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+
+});
+$("#modalButton").click(function(){
+    $("#kartik-modal2").modal("show")
+        .find("#modalContent")
+        .load($(this).attr("value"));
+    //$('w0-container').focus();
+});
+
+$("#sell_dialog").click(function(){
+    $("#client-modal").modal("show")
+        .find("#clientContent1")
+        .load($(this).attr("value"));
+    //$('w0-container').focus();
+});
+$("#dclient").click(function(){
+    location.href=$(this).attr("value");
+});
+$("#rest").click(function(){
+    window.open($(this).attr("value"),"_blank");
+});
+
+$("#return").click(function(){
+    window.open($(this).attr("value"),"_blank");
+
+});
+$("#client_dialog").click(function(){
+    $("#client-modal").modal("show")
+        .find("#clientContent1")
+        .load($(this).attr("value"));
+
+});
+
+
+function changePos()
+{
+	 var quantity = prompt("Сколько  ?", 1);
+        if (quantity) {
+		
+			$("#virtual").val(quantity);
+			var sdacha=$("#sum").text() - $("#money").val()// - quantity ;
+            sdacha = sdacha - quantity;
+			sdacha=-sdacha.toFixed(2);
+			$("#sdacha").html(sdacha);
+            
+		}
+}
+function editStore(id){
+    $.get('update-store', {id:id},function(){
+        window.location.replace("index")
+    });
+
+};
+function nazadZakaz(id){
+    if (confirm("Silmək istədiyinizdən əminsiz?")) {
+        $.get('nazad-zakaz', {id: id}, function () {
+            window.location.replace("index")
+        });
+    }
+
+};
+function nazadHistory(id){
+    if (confirm("Silmək istədiyinizdən əminsiz?")) {
+        $.get('nazad-history', {id: id}, function () {
+            window.location.replace("made")
+        });
+    }
+
+}
+function postponedSelect(number){
+
+    $("#postponed-modal").modal("show")
+        .find("#postponedContent")
+        .load("postponed-show?number="+number);
+
+}
+function vozvratSelect(number){
+
+    $("#postponed-modal").modal("show")
+        .find("#postponedContent")
+        .load("return-show?number="+number);
+
+}
+
+function openZakaz(id){
+
+    $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load("view2?id="+id);
+
+
+}
+
+function openMadeZakaz(id){
+
+    $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load("view3?id="+id);
+
+
+}
+
+function openHistoryZakaz(id){
+
+    $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load("view-history?id="+id);
+
+
+}
+
+function selectPlace(id)
+{
+    $.get('change-place', {id:id},function(data){
+      
+		window.location.replace("index?type=type&id="+id);
+    });
+
+}
+function openHistoryZakaz1(id){
+
+    $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load("../client/view-history?id="+id);
+
+
+}
+function otkazZakaz(id)
+{
+
+    $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load("otkaz?id="+id);
+}
+
+function receivedZakaz(id)
+{
+
+    $("#kartik-modal").modal("show")
+        .find("#modalContent")
+        .load("zakaz?id="+id);
+}
+function addSellType2() {
+    var names = [];
+    var quantity = [];
+    $('#select input:checked').each(function () {
+        names.push($(this).val());
+        quantity.push($("#return_id" + $(this).val()).val());
+        //alert($(this).val());
+    });
+    $.get('insert-type2', {id:names,quantity:quantity},function(){
+        window.location.replace("index");
+    });
+
+}
+function receivedSelectPostponed(){
+    var names = []; var quantity=[];var master=[];
+    $('#select input:checked').each(function() {
+        names.push( $(this).val() );
+        quantity.push( $("#return_id"+$(this).val()).val() );
+        master.push( $("#master"+$(this).val()).val() );
+        //alert($(this).val());
+    });
+
+    $.get('postponed-received', {id:names,quantity:quantity,date:$("#date_issue").val(),master:master},function(data){
+
+        if (data==0) alert("Mallardan birindən filialda yoxdur");
+        else { alert("Mallar təhvil vərildi");
+          //
+
+
+           // window.open('print-postponed?id='+names,'_blank');
+         window.location.replace("postponed");
+
+
+             }
+    });
+
+
+}
+
+
+function receivedAdminPostponed(number)
+{
+    $.get('postponed-received', {number:number},function(data){
+        alert("Вы подтвердили");
+        window.location.replace("index");
+    });
+
+}
+function insertProduct(id){
+    if (!id) id=-1;
+    $.get('insert-product', {id_product:$("#product").val(),id_menu:id},function(data){
+
+        if (id!=-1) $.pjax.reload({container:'#product_view',data:{id:id}, type: "GET", push:false,replace:false, url:'update'});
+        else $.pjax.reload({container:'#product_view', type: "GET", push:false,replace:false, url:'create'});
+    });
+};
+function receivedReturn(number)
+{
+    $.get('return-received', {number:number},function(data){
+        alert("Вы подтвердили");
+        window.location.replace("index1");
+    });
+
+}
+function printPostponed(number,receive)
+{
+    if (receive==1)   $.get('postponed-print', {number:number},function(data){
+
+    });
+    window.open('print-postponed?number='+number,'_blank');
+    setTimeout(function(){
+
+        window.location.replace("receive");
+
+    },4000);
+
+}
+function receivedSelectReturn(){
+    var names = []; var quantity=[];
+    $('#select input:checked').each(function() {
+        names.push( $(this).val() );
+        quantity.push( $("#return_id"+$(this).val()).val() );
+        //alert($(this).val());
+    });
+
+    $.get('return-received', {id:names,quantity:quantity,reason:$("#reason").val(),money:$("#money").val(),store:$("#store").val(),date:$("#date").val()},function(data){
+
+        window.location.replace("../returnp/index");
+
+
+    });
+
+
+}
+
+function returnNewSell(){
+
+    $.get('return-received-new', {money:$("#money").val()},function(data){
+
+        window.location.replace("index");
+
+
+    });
+
+}
+function editQuantity(id,quantity,val)
+{
+if (quantity<0) {
+	if (val==1) 
+		 $("#login-modal").modal("show")
+        .find("#loginContent")
+        .load('login?id='+id);
+else
+    $.get('update-quantity', {id:id,quantity:quantity},function(data){
+        $.pjax.reload({container:"#grid-update"});
+        $("#sum"+id).html(data);
+		
+    });
+}
+else 
+$.get('update-quantity', {id:id,quantity:quantity},function(data){
+        $.pjax.reload({container:"#grid-update"});
+        $("#sum"+id).html(data);
+		
+    });
+
+
+}
+
+function editNote(id)
+{
+    $.get('update-note', {id:id,value:$("#"+id).is(':checked')},function() {
+
+        // $("#quantity"+id).focus();
+    });
+
+}
+function editQuantityId(id,quantity)
+{
+    $.get('update-quantity', {id:id,quantity:quantity},function() {
+
+
+        $("#kartik-modal").modal("show")
+            .find("#modalContent")
+            .load("zakaz?id=" +$('#client').text());
+
+        // $("#quantity"+id).focus();
+    });
+
+}
+
+function editPrice(id,price)
+{
+    $.get('../password/check-password', {password:$('#password').val()},function(data){
+	
+        if (data==1) {
+				$.get('update-price', {id:id,price:price},function(data){
+					window.location.reload();
+				});
+        }
+        else 
+		{
+			alert("Şifrə düzgün daxili edilməyib");
+			setTimeout(function () {
+					window.location.reload();
+				},300);
+		
+		}		
+       
+    });
+
+
+}
+function editTransfer(id)
+{
+    $.get('../password/check-password', {password:$('#password').val()},function(data){
+	
+        if (data==1) {
+				$("#login-modal").modal("show")
+				.find("#loginContent")
+				.load('spaces?id='+id);
+        }
+        else 
+		{
+			alert("Şifrə düzgün daxili edilməyib");
+			setTimeout(function () {
+					window.location.reload();
+				},300);
+		
+		}		
+       
+    });
+
+
+}
+function editPriceSellIndex(id,price,id_role)
+{
+	if (id_role != 2)
+	{
+		$("#login-modal").modal("show")
+			.find("#loginContent")
+			.load('login-price?id='+id+"&price="+price);
+	
+	}
+	else {
+			$.get('update-price', {id:id,price:price},function(data){
+				$.pjax.reload({container:"#grid-update"});
+				$("#sum"+id).html(data);
+			});	
+	}
+}
+
+function transfer()
+{
+	if (id_role != 2)
+	{
+		$("#login-modal").modal("show")
+			.find("#loginContent")
+			.load('login-transfer?id='+id);
+	
+	}
+}
+function editPriceTop(id,price)
+{
+    $.get('update-price-top', {id:id,price:price},function(){
+        setTimeout(function () {
+
+            $("#pack"+id).focus();
+        },300);
+    });
+
+}
+
+
+function editPacka(id,price)
+{
+    $.get('update-pack', {id:id,price:price},function(){
+        $.pjax.reload({container:"#grid-arrival"});
+        setTimeout(function () {
+
+            $("#barcode").focus();
+        },300);
+    });
+
+}
+function editSn(id,sn)
+{
+    $.get('update-sn', {id:id,sn:sn},function(){
+        $.pjax.reload({container:"#grid-arrival"});
+    });
+
+}
+
+function editUsd(id,price)
+{
+    $.get('update-usd', {id:id,price:price},function(){
+        $.pjax.reload({container:"#grid-arrival"});
+    });
+
+}
+function editProcId(id,proc)
+{
+    $.get('update-proc', {id:id,proc:proc},function(){
+        $.pjax.reload({container:"#grid-arrival"});
+        setTimeout(function () {
+
+            $("#price_top"+id).focus();
+        },300);
+    });
+
+}
+
+function editPricesell(id,price)
+{
+    $.get('update-pricesell', {id:id,price:price},function(){
+        $.pjax.reload({container:"#grid-arrival"});
+        setTimeout(function () {
+
+            $("#proc"+id).focus();
+        },300);
+
+    });
+
+}
+function clickProduct(id,name)
+{
+    if (confirm("Выбрать товар " + name)) {
+        $("#id_product").html(id);
+        $("#name_product").html(name);
+
+        $("#sell-modal").modal("hide");
+    }
+}
+
+function image(group)
+{
+    window.open('image?group='+group,'_blank');
+}
+function receivedArrival(store,contractor,date)
+{
+   
+    if (!contractor) {
+        $("#select2-contractor-container .select2-selection__placeholder").css('color', 'red');
+        $("#select2-contractor-container .select2-selection__placeholder").css('font-weight', 'bold');
+        return;
+    }
+  
+    for (var i = 1; i <= $(".myy").length; i++) {
+        if ($('#price'+i).val()==0) {$('#price'+i).css('border', '3px outset red'); flag=1;return;}
+        else $('#price'+i).css('border', '1px solid #A9A9A9');
+
+    }
+ 
+
+   $.get('received', {store:store,contractor:contractor,date:date},function(){
+       window.location.replace("index");
+    });
+
+}
+function postponedArrivalSelect(number) {
+    $.get('postponed-select', {number:number},function(){
+        window.location.replace("index");
+    });
+}
+function editQuantityMenu(id,quantity)
+{
+    $.get('update-quantity-consist', {id:id,quantity:quantity},function() {
+              $.pjax.reload({container:'#product_view'});
+           });
+}
+
+function postponedArrival(store,contractor)
+{
+
+
+    $.get('postponed-arrival', {store:store,contractor:contractor},function(){
+        window.location.replace("index");
+    });
+
+}
+function deleteConsist(id)
+{
+    $.get('delete-consist', {id:id},function() {
+       $.pjax.reload({container:'#product_view'});
+        });
+}
+function addSellBarcode(barcode){
+    if (barcode){
+    $.get('insert-barcode', {barcode:barcode},function(){
+	  window.location.replace("index");
+      //  $.pjax.reload({container:"#grid-arrival"});
+        //$.pjax.reload({container:"#grid-arrival"});$("#barcode").val("");
+        $("#barcode").focus();
+    });}
+}
+function addTransfer(id) {
+    var quantity=prompt("Сколько  ?",1);
+    if (quantity) {
+        $.get('insert', {id:id,quantity:quantity},function(){
+            // $.pjax.reload({container:"#grid-arrival"});
+        });
+    }
+}
+
+function addSellType(id){
+
+        $.get('insert-type', {id:id},function(){
+           window.location.replace("index");
+        });
+    //
+
+}
+
+
+function addArrivalType(id)
+{
+    $.get('insert-type', {id:id},function(){
+        window.location.replace("index");
+    });
+}
+function reportSell(type1,type2,type3,product)
+{
+
+
+
+}
+
+
+function findProduct(product) {
+
+    $("#dclient-modal").modal("show")
+        .find("#dclientContent")
+        .load("rest?id="+product);
+
+
+
+};
+
+function quantityProduct(product) {
+
+    $("#dclient-modal").modal("show")
+        .find("#dclientContent")
+        .load("select-product?id="+product);
+
+
+
+};
+function addSell(id,id_client)
+{
+
+        var quantity=prompt("Сколько  ?",1);
+        if (quantity) {
+            $.get('insert', {id:id,id_client:id_client,quantity:quantity},function(){
+
+            });
+
+        }
+
+}
+function addSell2(id)
+{
+
+    var quantity=prompt("Сколько  ?",1);
+    if (quantity) {
+        $.get('insert', {id:id,quantity:quantity},function(){
+
+        });
+
+    }
+
+}
+
+
+function addSverka(id) {
+
+        var quantity = prompt("Сколько  ?", 1);
+        if (quantity) {
+            $.get('insert', {id: id, quantity: quantity}, function () {
+                // $.pjax.reload({container:"#grid-arrival"});
+            });
+        }
+
+}
+
+
+function addSverkaBarcode(barcode){
+    if (barcode){
+        $.get('insert-barcode', {barcode:barcode},function(){
+            window.location.replace("index");
+
+        });}
+}
+function deleteAll(type)
+{
+    $.get('delete-all', {type:type},function(){
+        window.location.replace("index?type="+type);
+		 });
+
+}
+
+
+function deleteAllTransfer()
+{
+    $.get('delete-all', {},function(){
+        window.location.replace("index");
+    });
+
+}
+
+function selectClient(id)
+{
+    if(confirm("Выбрать текущего клиента?")) {
+        $.get('select', {id: id}, function () {
+          //  window.location.replace("index");
+            //$.pjax.reload({container: "#grid-arrival"});
+        });
+    }
+}
+
+function selectClientMove(id)
+{
+    if(confirm("Выбрать текущего клиента?")) {
+       // $.get('select', {id: id}, function () {
+            window.location.replace("client?id="+id);
+            //$.pjax.reload({container: "#grid-arrival"});
+       // });
+    }
+}
+function receivedDB(){
+   //
+    alert("dfdf");
+}
+function cancel(number){
+  //  if(confirm("Ləğv ətmək istədiynizdən əmin sinizmi?")) {
+        $.get('cancel', {number: number}, function () {
+            window.location.replace("index");
+            //$.pjax.reload({container: "#grid-arrival"});
+        });
+
+   // }
+}
+function receivedSell(kassa,virtual,money,number) {
+
+	$("#received").prop("disabled", true);
+   
+       setTimeout(function(){
+
+			$.get('received', {money:money,postponed:0,kassa:kassa,virtual:virtual,number:number}, function () {
+			   window.location.replace("index")
+			});
+      },3000);
+
+
+}
+
+
+function receivedSell1(number) {
+$(".postponed").prop("disabled",true);	 
+	 $("<iframe>")                             // create a new iframe element
+		.hide()                               // make it invisible
+		.attr("src", "print?number="+number) // point the iframe to the page you want to print
+		.appendTo("body"); 
+		
+      		  
+    setTimeout(function(){
+		//$.get('received', {money: 0,postponed:1,kassa:'',virtual:'',number:number}, function () {
+				 window.location.replace("index")
+			//});
+     },3000);
+
+}
+
+function receivedSell2(number,type) {
+$(".postponed").prop("disabled",true);
+   if (number<0 && type)
+    {
+	
+				$.get('/site/logout', {}, function () {
+							 window.location.replace("/site/logout")
+						});
+	return;
+	}
+							   $("<iframe>")                             // create a new iframe element
+								.hide()                               // make it invisible
+								.attr("src", "print3") // point the iframe to the page you want to print
+								.appendTo("body"); 
+								
+				
+
+    setTimeout(function(){
+		$.get('received', {money: 0,postponed:1,kassa:'',virtual:'',number:number}, function () {
+				if (type) 
+						$.get('/site/logout', {}, function () {
+							 window.location.replace("/site/logout")
+						});
+					else window.location.replace("index")
+			});
+     },3000);
+
+
+}
+function proverka()
+{
+
+    var barcode = [];
+
+    for (var i = 0; i <=10; i++)
+    {
+       if ($("#barcodep-name-"+i).val()) barcode.push( $("#barcodep-name-"+i).val());
+        $.get('proverka', {barcode:barcode}, function (date) {
+            if (date==1) {
+                alert('Bu barcod artıq məvcuddur!!!');
+            }
+        });
+    }
+   // barcode.push( $("#barcodep-name-"+i).val());
+   /* $.get('proverka', {barcode:barcode}, function () {
+        //window.location.replace("index")
+    });*/
+   // alert(barcode);
+}
+
+
+function newClient () {
+
+      $.ajax({
+            url:     '../client/create1', //url страницы (action_ajax_form.php)
+            type:     "POST", //метод отправки
+            dataType: "html", //формат данных
+            data: $("form").serialize(),  // Сеарилизуем объект
+            success: function(response) { //Данные отправлены успешно
+                window.location.reload();
+            },
+            
+        });
+
+}
+function  printChek(number) {
+
+$("<iframe>")                             // create a new iframe element
+        .hide()                               // make it invisible
+        .attr("src", 'print1?number=' + number) // point the iframe to the page you want to print
+        .appendTo("body"); 
+}
+function tableShow(type1,type2,type3,type4,type5,product){
+    $.get('table', {type1:type1,type2:type2,type3:type3,type4:type4,type5:type5,product:product},function(data){
+       // $("#myTable").html(data);
+    });
+}
+function barcodeReceived() {
+
+   window.open('print','_blank');
+
+    $.get('delete-all', {},function(){
+        //   $.pjax.reload({container:"#grid-arrival"});
+    });
+
+}
+function printDay()
+{
+	$("<iframe>")                             // create a new iframe element
+        .hide()                               // make it invisible
+        .attr("src", "print-day") // point the iframe to the page you want to print
+        .appendTo("body"); 
+
+}
+function barcodeReceived2() {
+
+    window.open('print2','_blank');
+
+    $.get('delete-all', {},function(){
+        //   $.pjax.reload({container:"#grid-arrival"});
+    });
+
+}
+function editPriceAr(price)
+{
+    //pricesell=price* $("#proc").val()/100;
+    $.get('get-procent-edit', {price: $("#price").val(),pricesell: $("#pricesell").val()},function(date){
+
+        $("#proc").val(date);
+
+    });
+
+}
+
+function editProcent(procent,price)
+{
+    //pricesell=price* $("#proc").val()/100;
+    $.get('procent-edit', {procent: procent,price: price},function(date){
+
+        $("#pricesell").val(date);
+
+    });
+
+}
+function returnSell(id)
+{
+    $("#select").modal("show");
+    $("#id").val(id);
+}
+
+function sverkaReceived(){
+
+
+    $.get('received', {}, function () {
+        window.location.replace("index");
+    });
+}
+function returnSellReceived(quantity,reason,id)
+{
+
+    
+	$("<iframe>")                             // create a new iframe element
+		.hide()                               // make it invisible
+		.attr("src", "print-otmena?id="+id+"&reason="+reason+"&quantity="+quantity) // point the iframe to the page you want to print
+		.appendTo("body"); 
+	 setTimeout(function(){
+	 
+			 $.get('received-return', {id: id,quantity:quantity,reason:reason}, function () {
+				window.location.reload();
+			 });
+		},2000);
+}
+function receivedTransfer(whence,where,date)
+{
+
+
+    $.get('received', {whence:whence,where:where,date:date}, function (data) {
+        if (data) alert("Bu maldan filialda yoxdur: " +  data) ;
+        else
+        window.location.replace("index");
+    });
+
+}
+
+function returnArrival(id)
+{
+    if (quantity=prompt('Сколько вернуть?',1))
+    {
+        $.get('received-return1', {id:id,quantity:quantity}, function () {
+            window.location.replace("return");
+            // alert("sdsd");
+        })
+    }
+
+}
+function insertNote(id)
+{
+  $.get('get-note', {id:id}, function (date) {
+    if (note=prompt('Qeyd?',date))
+		{
+			$.get('insert-note', {id:id,note:note}, function () {
+			  
+			})
+		}
+  })
+
+
+}
+function cancelArrrival(number){
+ 
+          $.get('cancel', {number: number}, function () {
+              window.location.replace("index");         
+          });
+  
+     // }
+  }
+function debtReceived(id){
+    if (!$("#kassa"+id).val()) {
+           $("#select2-kassa"+id+"-container .select2-selection__placeholder").css('background-color', 'red');
+           $("#select2-kassa"+id+"-container .select2-selection__placeholder"+id).css('font-weight', 'bold');
+           return;
+       }
+       
+       
+       $.get('received-debt', {id:id,sum:$("#sum"+id).val(),note:$("#note"+id).val(),kassa:$("#kassa"+id).val()},function(){
+           window.location.replace("index");
+       });
+   }
+   function infoContr(id){
+ 
+    window.open("../move/contr?id="+id,"_blank");
+
+    }
+function debtReceivedClient(id){
+        if ($("#sum"+id).val()!=0)
+        {
+             if (!$("#kassa"+id).val()) {
+                $("#select2-kassa"+id+"-container .select2-selection__placeholder").css('background-color', 'red');
+                $("#select2-kassa"+id+"-container .select2-selection__placeholder"+id).css('font-weight', 'bold');
+                return;
+            }
+        $('#print').attr('disabled', true)	
+             $("<iframe>")                             // create a new iframe element
+                .hide()                               // make it invisible
+                .attr("src", "print-payment?id="+id+"&sum="+$("#sum"+id).val()) // point the iframe to the page you want to print
+                .appendTo("body"); 
+                
+          setTimeout(function () {
+        
+                      $.get('received-debt', {id:id,sum:$("#sum"+id).val(),note:$("#note"+id).val(),date:$("#date"+id).val(),kassa:$("#kassa"+id).val()},function(){
+                        window.location.replace("dialog");
+                });
+                },300);		
+         
+        }	
+                            
+    }
+function editExchange(rate) {
+    $.get('exchange', {rate:rate},function(){
+        window.location.replace("index")
+    });
+}
+function editUsdAzn(usd)
+{
+    $.get('usd-azn', {usd:usd},function(data){
+       $("#price").val(data);
+    });
+
+}
+function infoDebt(id)
+{
+    $("#info").modal("show")
+        .find("#modalContent")
+       .load($("#"+id).attr("value"));
+      //  .load($("#"+$id).attr("value"));
+    //alert($("#"+$id).attr("value"));
+}
+//"debt/info?number="+$number
+
+function infoSell(id)
+{
+    $("#sell-info").modal("show")
+        .find("#modalContent1")
+        .load($("#"+id).attr("value"));
+
+}
+
+function selectProduct(id)
+{
+    $.get('type4', {id:id},function(data){
+        $("#div6").show();
+        $("#product").html(data);
+    });
+}
+
+function editContentSell(type,id)
+{
+    $.get('edit-session', {type:type},function(data){
+		  window.location.replace("index?type="+type+"&id="+id);
+    });
+   
+  
+}
